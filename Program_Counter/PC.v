@@ -9,11 +9,9 @@ module PC( count, dataIn, CLK, CLB, IncPC, LoadPC);
 	input LoadPC;
 	reg [7:0] count;
 	
-always @(posedge CLK or negedge CLB) begin
+always @(posedge CLK) begin
 
-	if(CLB == 0)	
-		count  <= 0;
-	else if (LoadPC)
+	if (LoadPC)
 		count <= dataIn;
 	else if (IncPC)
 		count <= count + 1'b1;
