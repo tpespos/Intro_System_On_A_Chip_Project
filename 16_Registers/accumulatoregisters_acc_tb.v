@@ -1,0 +1,61 @@
+module tb_acc;
+
+    reg clk;
+    reg reset;
+    reg load_acc;
+    reg [7:0] data_in;
+    wire [7:0] acc_out;
+
+    // Instantiate the acc module
+    acc uut (
+        .clk(clk),
+        .reset(reset),
+        .load_acc(load_acc),
+        .data_in(data_in),
+        .acc_out(acc_out)
+    );
+
+    // Clock generation
+    always #5 clk = ~clk; //togles every 5
+
+    initial begin
+        // Initialize signals
+        clk = 0;
+        reset = 1; //reset is active
+        load_acc = 0; //load is diabled
+        data_in = 8'b0; //default to 0
+
+        // Release reset
+        #10 reset = 0;
+
+        // Load data into accumulator
+        data_in = 8'hFF; //in binary is 11111111
+        load_acc = 1;
+        #10;
+        load_acc = 0;
+
+        // Display accumulator value
+        $display("Accumulator Out: %h", acc_out);
+
+        // Load another value into accumulator
+        data_in = 8'hAA; //in binary is 10101010
+        load_acc = 1;
+        #10;
+        load_acc = 0;
+
+        // Display accumulator value
+        $display("Accumulator Out: %h", acc_out);
+
+        // Reset accumulator
+        #10 reset = 1;
+        #10 reset = 0;
+
+        // Display accumulator value
+        $display("Accumulator Out after reset: %h", acc_out);
+
+        // End of simulation
+        $stop;
+    end
+
+endmodule
+
