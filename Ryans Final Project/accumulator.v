@@ -5,17 +5,12 @@ module ACC_MUX (
 	input wire clb,
 	input wire load_acc,
 	output reg [7:0] acc_out,
-
 	input wire [1:0] SelAcc,
 	input reg [7:0] data_in, // data in from registers
 	input reg [3:0] immediate, // load immediate
 
 	//MUX1 inputs and output
-
-	input reg [7:0] ALU_out // output from ALU
-
-
-	 
+	input reg [7:0] ALU_out // output from ALU 
 );
 
 reg SelAcc1;
