@@ -15,14 +15,14 @@ module ControllerFSM (
     output reg [3:0] SelALU
 );
     
-always @(negedge CLK) begin //, Opcode) begin
+always @(Z, C, Opcode) begin
 
 //default state:
 //begin
 LoadIR <= 1;
 IncPC <= 1;
-SelPC <= 1;
-LoadPC <= 1;
+SelPC <= 0;
+LoadPC <= 0;
 LoadReg <= 0;
 LoadAcc <= 0;
 SelAcc <= 2'b00;

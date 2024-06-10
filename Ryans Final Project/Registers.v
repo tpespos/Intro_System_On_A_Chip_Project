@@ -1,23 +1,28 @@
 module reg_file (
-	input wire clk,
-	input wire clb,
-	input wire LoadReg,
-	input wire [3:0] regAdd,
-	input wire [7:0] fromACC,
-	output wire [7:0] toPC,
-	output wire [7:0] toALUandACC
-
+    input wire clk,
+    input wire reset,
+    input wire [3:0] reg_write_addr,
+    input wire [3:0] reg_read_addr1,
+    input wire [3:0] reg_read_addr2,
+    input wire [7:0] reg_write_data,
+    input wire reg_write_enable,
+    output wire [7:0] reg_read_data1,
+    output wire [7:0] reg_read_data2
 );
     reg [7:0] registers [15:0]; // 16 8-bit registers
+    integer i;
 
-    always @(posedge clk) begin
-        
-        if (LoadReg) begin
-            registers[regAdd] <= fromACC;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < 16; i = i + 1) begin
+                registers[i] <= 8'b0; // Sets each register to 0 (clears the registers).
+            end
+        end else if (reg_write_enable) begin
+            registers[reg_write_addr] <= reg_write_data;
         end
     end
 
-    assign toPC = registers[regAdd];
-    assign toALUandACC = registers[regAdd];
+    assign reg_read_data1 = registers[reg_read_addr1];
+    assign reg_read_data2 = registers[reg_read_addr2];
 
 endmodule

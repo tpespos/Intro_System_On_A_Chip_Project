@@ -29,8 +29,7 @@ always @(*) begin
         // Add more operations here as needed
         default: ALU_Out = 8'b00000000; // Default case
     endcase
-    Z = (A == 8'b0) ? 1 : 0; // Set Zero flag
-    CarryOut = (A < 8'b0) ? 1 : 0; // Set Zero flag
+    Z = (ALU_Out == 8'b00000000) ? 1 : 0; // Set Zero flag
 end
 
 endmodule

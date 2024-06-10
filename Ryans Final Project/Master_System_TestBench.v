@@ -1,69 +1,85 @@
-module Master_System_TestBench();
+module Master_System_TestBench;
 
-reg CLK;
-reg CLB;
-reg [7:0] instructionToSend;
-wire [7:0] PCcounter;
-integer PCtoINT;
+reg clk;
+reg clb;
+reg load_acc;
+reg [7:0] A;
+reg [7:0] B;
+reg [3:0] ALU_Sel;
 
-    reg [7:0] instructions [20:0];
-
-    initial begin
-        instructions[0]  = 8'b11010101; // set ACC to 5
-        instructions[1]  = 8'b01010000; // acc to reg0 (acc=5)
-        instructions[2]  = 8'b11010011; // set ACC to 3
-        instructions[3]  = 8'b01010001; // acc to reg1 (acc=3)
-        instructions[4]  = 8'b11010000; // set ACC to 0
-        instructions[5]  = 8'b00010000; // acc add reg0 (acc=5 at end)
-        instructions[6]  = 8'b00100001; // acc sub reg1 (acc=2 at end)
-        instructions[7]  = 8'b01010010; // set reg1 to acc (reg1=2)
-        instructions[8]  = 8'b10110000; // multiply acc * 2 (shift left) (acc=4)
-        instructions[9]  = 8'b00000000; // NOP
-        instructions[10] = 8'b00000000; // NOP
-        instructions[11] = 8'b00000000; // NOP
-        instructions[12] = 8'b11011101; // set acc to imm (-3)
-        instructions[13] = 8'b10101111; // branch if acc neg, goto address in imm (15)
-        instructions[14] = 8'b11010000; // set acc to imm (0) // SHOULD SKIP
-        instructions[15] = 8'b11010001; // set acc to imm (1)
-        instructions[16] = 8'b00000000; // NOP
-        instructions[17] = 8'b00000000; // NOP
-        instructions[18] = 8'b11110000; // HALT
-    end
+wire [7:0] acc_out;
+wire CarryOut;
+wire Z;
 
 // Instantiate the Master_System
-Master_System Master_SystemActual(
-	.CLK(CLK),
-	.CLB(CLB),
-	.FromInstructionMemroy(instructionToSend),
-	.ToInstructionMemory(PCcounter)
+Master_System uut (
+    .clk(clk),
+    .clb(clb),
+    .load_acc(load_acc),
+    .acc_out(acc_out),
+    .A(A),
+    .B(B),
+    .ALU_Sel(ALU_Sel),
+    .CarryOut(CarryOut),
+    .Z(Z)
 );
 
 // Clock generation
 initial begin
-    CLK = 1;
-    forever #5 CLK = ~CLK; // 10ns clock period
+    clk = 0;
+    forever #5 clk = ~clk; // 10ns clock period
 end
 
 
-    // Stimulus generation
-    initial begin
-        // Initialize inputs
-        //PCcounter = 0;
-        PCtoINT = 0;
+// Stimulus generation
+initial begin
+    // Initialize inputs
+    clb = 1;
+    load_acc = 1;
+    A = 8'h00;
+    B = 8'h00;
+    ALU_Sel = 4'b0000;
+    #10;
+    
+        // Test addition
+        A = 8'd15; B = 8'd10; ALU_Sel = 4'b0001; // 15 + 10 = 25
+        #10;
+        $display("Add: A = %d, B = %d, acc_out = %d, CarryOut = %b, Z = %b", A, B, acc_out, CarryOut, Z);
 
-        // Stimulus
-        forever begin
-//            #10;
-		if(PCcounter != 0) begin
-            		PCtoINT = PCcounter;
-		end
-	
-            instructionToSend = instructions[PCtoINT];
-            //PCtoINT = PCtoINT + 1;
-	#10;
-        end
+        // Test subtraction
+        A = 8'd20; B = 8'd25; ALU_Sel = 4'b0010; // 20 - 25 = -5 (borrow)
+        #10;
+        $display("Sub: A = %d, B = %d, acc_out = %d, CarryOut = %b, Z = %b", A, B, acc_out, CarryOut, Z);
 
+        // Test NOR
+        A = 8'b10101010; B = 8'b01010101; ALU_Sel = 4'b0011; // NOR of A and B
+        #10;
+        $display("NOR: A = %b, B = %b, acc_out = %b, Z = %b", A, B, acc_out, Z);
+
+        // Test left shift
+        A = 8'b00001111; B = 8'b0; ALU_Sel = 4'b1011; // A << 1
+        #10;
+        $display("LShift: A = %b, acc_out = %b, Z = %b", A, acc_out, Z);
+
+        // Test right shift
+        A = 8'b11110000; B = 8'b0; ALU_Sel = 4'b1100; // A >> 1
+        #10;
+        $display("RShift: A = %b, acc_out = %b, Z = %b", A, acc_out, Z);
+
+        // Test less than
+        A = 8'd10; B = 8'd20; ALU_Sel = 4'b1000; // A < B
+        #10;
+        $display("LessThan: A = %d, B = %d, acc_out = %b, Z = %b", A, B, acc_out, Z);
+
+        // Test equal
+        A = 8'd30; B = 8'd30; ALU_Sel = 4'b0110; // A == B
+        #10;
+        $display("Equal: A = %d, B = %d, acc_out = %b, Z = %b", A, B, acc_out, Z);
 end
 
+// Monitor the outputs
+initial begin
+    $monitor("At time %t, acc_out = %h, CarryOut = %b, Z = %b", $time, acc_out, CarryOut, Z);
+end
 
 endmodule
