@@ -1,8 +1,9 @@
+//c
 module ALU (
-    input [7:0] A,           // First operand
-    input [7:0] B,           // Second operand
+    input signed [7:0] A,           // First operand
+    input signed [7:0] B,           // Second operand
     input [3:0] ALU_Sel,     // ALU operation selector (4 bits)
-    output reg [7:0] ALU_Out,// ALU output
+    output reg signed[7:0] ALU_Out,// ALU output
     output reg CarryOut,     // Carry out flag (borrow flag for subtraction)
     output reg Z             // Zero flag
 );
@@ -29,7 +30,8 @@ always @(*) begin
         // Add more operations here as needed
         default: ALU_Out = 8'b00000000; // Default case
     endcase
-    Z = (ALU_Out == 8'b00000000) ? 1 : 0; // Set Zero flag
+    Z = (A == 8'b0) ? 1 : 0; // Set Zero flag
+    CarryOut = (A[7] == 1) ? 1 : 0; // Set Zero flag
 end
 
 endmodule

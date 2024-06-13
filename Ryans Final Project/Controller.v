@@ -1,4 +1,4 @@
-
+//c
 module ControllerFSM (
     input wire CLK,
     input wire CLB,
@@ -14,15 +14,21 @@ module ControllerFSM (
     output reg [1:0] SelAcc,
     output reg [3:0] SelALU
 );
-    
-always @(Z, C, Opcode) begin
+
+reg doThings = 0;
+
+always @(negedge CLK) begin
+doThings = ~doThings;
+end
+
+always @(posedge doThings) begin //, Opcode) begin
 
 //default state:
 //begin
 LoadIR <= 1;
 IncPC <= 1;
-SelPC <= 0;
-LoadPC <= 0;
+SelPC <= 1;
+LoadPC <= 1;
 LoadReg <= 0;
 LoadAcc <= 0;
 SelAcc <= 2'b00;
@@ -38,7 +44,7 @@ if (Opcode == 4'b0001) begin //Add
 	LoadPC <= 0;
 	LoadReg <= 0;
 	LoadAcc <= 1;
-	SelAcc <= 2'b01;
+	SelAcc <= 2'b10;
 
 end else if (Opcode == 4'b0010) begin //Sub
 	LoadIR <= 1;
@@ -47,7 +53,7 @@ end else if (Opcode == 4'b0010) begin //Sub
 	LoadPC <= 0;
 	LoadReg <= 0;
 	LoadAcc <= 1;
-	SelAcc <= 2'b01;
+	SelAcc <= 2'b10;
 
 end else if (Opcode == 4'b0011) begin //Nor
 	LoadIR <= 1;
@@ -56,7 +62,7 @@ end else if (Opcode == 4'b0011) begin //Nor
 	LoadPC <= 0;
 	LoadReg <= 0;
 	LoadAcc <= 1;
-	SelAcc <= 2'b01;
+	SelAcc <= 2'b10;
 
 end else if (Opcode == 4'b1100) begin //Shift right
 	LoadIR <= 1;
@@ -65,7 +71,7 @@ end else if (Opcode == 4'b1100) begin //Shift right
 	LoadPC <= 0;
 	LoadReg <= 0;
 	LoadAcc <= 1;
-	SelAcc <= 2'b01;
+	SelAcc <= 2'b10;
 
 end else if (Opcode == 4'b1011) begin //Shift left
 	LoadIR <= 1;
@@ -74,7 +80,7 @@ end else if (Opcode == 4'b1011) begin //Shift left
 	LoadPC <= 0;
 	LoadReg <= 0;
 	LoadAcc <= 1;
-	SelAcc <= 2'b01;
+	SelAcc <= 2'b10;
 
 end 
 //////////////////////////////////////////////////// Register/ACC Load ////////////////////////////////////////////////////
