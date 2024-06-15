@@ -15,8 +15,6 @@ module PC_module(
 
 	MUX2 mux2instance(MUX2_to_PC, A, B, SelPC);
 	PC PCinstance(IM, MUX2_to_PC, CLK, CLB, IncPC, LoadPC);
-	
-	
 
 endmodule
 
@@ -26,7 +24,6 @@ module MUX2(dataOut, A, B, SelPC);
 	input  [7:0]	A;
 	input  [3:0]	B;
 	input 			SelPC;
-
 	assign dataOut = SelPC ? B:A;
 
 endmodule
@@ -51,14 +48,11 @@ always @(posedge doThings) begin
 
 	if (LoadPC) 
 		count <= dataIn;
-		
 	else if (IncPC)
 		count <= count + 1'b1;
-	
 	if (IncPC)
 		if (LoadPC)
 			count <= 'b0;
-
 end
 
 endmodule
