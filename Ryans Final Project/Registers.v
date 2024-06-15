@@ -14,17 +14,16 @@ module reg_file (
 reg doThings = 1;
 
 always @(posedge clk) begin
-doThings = ~doThings;
+	doThings = ~doThings;
 end
 
-always @(posedge doThings) begin
-        
-        if (LoadReg) begin
+always @(posedge doThings) begin     
+	if (LoadReg) begin
             registers[regAdd] <= fromACC;
         end
-    end
+end
 
-    assign toPC = registers[regAdd];
-    assign toALUandACC = registers[regAdd];
+assign toPC = registers[regAdd];
+assign toALUandACC = registers[regAdd];
 
 endmodule
