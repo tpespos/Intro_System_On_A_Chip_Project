@@ -6,17 +6,13 @@ module ACC_MUX (
 	input wire clb,
 	input wire load_acc,
 	output reg signed[7:0] acc_out,
-
 	input wire [1:0] SelAcc,
 	input reg signed[7:0] data_in, // data in from registers
 	input reg signed[3:0] immediate, // load immediate
 
 	//MUX1 inputs and output
-
 	input reg [7:0] ALU_out // output from ALU
-
-
-	 
+ 
 );
 
 reg SelAcc1;
@@ -26,7 +22,7 @@ reg [7:0] ACC_store;
 reg doThings = 1;
 
 always @(negedge clk) begin
-doThings = ~doThings;
+	doThings = ~doThings;
 end
 
 always @(posedge doThings) begin
